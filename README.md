@@ -1,2 +1,2 @@
 # TemanPetani-API
-Web API for TemanPetani (teman-petani-web.vercel.app)
+Web API for TemanPetani (https://teman-petani-web.vercel.app)
