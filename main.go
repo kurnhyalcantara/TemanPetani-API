@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "github.com/kurnhyalcantara/TemanPetani-API/cmd/server"
 
 func main() {
-	fmt.Println("Hello world!")
+	server.Serve()
 }
