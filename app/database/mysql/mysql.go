@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/kurnhyalcantara/TemanPetani-API/app/config"
+	"github.com/kurnhyalcantara/TemanPetani-API/app/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -31,7 +32,8 @@ func ConnectDB(dbConfig *config.DBConfig) error {
 		return fmt.Errorf("can't send ping to database: %v", err)
 	}
 
-	fmt.Println("Database connected...")
+	logs := logger.SetUpLogger()
+	logs.Println("Database connected...")
 
 	return nil
 }
