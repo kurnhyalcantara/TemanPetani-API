@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/kurnhyalcantara/TemanPetani-API/app/config"
+	"github.com/kurnhyalcantara/TemanPetani-API/app/database/migration"
 	"github.com/kurnhyalcantara/TemanPetani-API/app/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -18,6 +19,10 @@ func ConnectDB(dbConfig *config.DBConfig) error {
 		log.Fatalf("error connect to db: %v", err)
 	}
 
+	if errInitMigration := migration.InitMigration(db); errInitMigration != nil {
+		log.Fatalf("error migrate db: %v", err)
+	}
+	
 	initDb, err := db.DB()
 	if err != nil {
 		return err
