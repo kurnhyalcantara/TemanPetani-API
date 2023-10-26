@@ -9,28 +9,31 @@ type userRepo struct {
 	db *gorm.DB
 }
 
-// Create implements UserRepoInterface.
-func (*userRepo) Create(core *model.CreateUser) error {
-	panic("unimplemented")
+// Create implements UserRepoInterface
+func (repo *userRepo) Create(core *model.CreateUser) error {
+	if tx := repo.db.Create(&core); tx.Error != nil {
+		return tx.Error
+	}
+	return nil
 }
 
-// Delete implements UserRepoInterface.
+// Delete implements UserRepoInterface
 func (*userRepo) Delete(ID uint) {
 	panic("unimplemented")
 }
 
-// Get implements UserRepoInterface.
+// Get implements UserRepoInterface
 func (*userRepo) Get(ID uint) (*model.User, error) {
 	panic("unimplemented")
 }
 
-// GetAll implements UserRepoInterface.
+// GetAll implements UserRepoInterface
 func (*userRepo) GetAll(limit int, offset uint) ([]*model.User, error) {
 	panic("unimplemented")
 }
 
-// Update implements UserRepoInterface.
-func (*userRepo) Update(ID uint, core *model.UpdateUser) error {
+// Update implements UserRepoInterface
+func (*userRepo) Update(ID uint, core *model.User) error {
 	panic("unimplemented")
 }
 
