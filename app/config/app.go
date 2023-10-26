@@ -8,11 +8,11 @@ import (
 )
 
 type AppConfig struct {
-	HOST	string
-	PORT	int
-	DEBUG bool
-	JWT_SECRET_KEY string
-	JWT_REFRESH_KEY	string
+	HOST            string
+	PORT            int
+	DEBUG           bool
+	JWT_SECRET_KEY  string
+	JWT_REFRESH_KEY string
 }
 
 var appConfig = &AppConfig{}
@@ -58,10 +58,10 @@ func LoadAppConfig() (*AppConfig, error) {
 	debugBool, _ := strconv.ParseBool(debug)
 
 	return &AppConfig{
-		HOST: host,
-		PORT: portInt,
-		DEBUG: debugBool,
-		JWT_SECRET_KEY: jwtSecretKey,
+		HOST:            host,
+		PORT:            portInt,
+		DEBUG:           debugBool,
+		JWT_SECRET_KEY:  jwtSecretKey,
 		JWT_REFRESH_KEY: jwtRefreshKey,
 	}, nil
 }
