@@ -9,3 +9,4 @@ type UserRepoInterface interface {
 	Update(ID uint, core *model.User) error
 	Delete(ID uint)
 }
+

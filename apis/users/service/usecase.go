@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/kurnhyalcantara/TemanPetani-API/apis/users"
 	"github.com/kurnhyalcantara/TemanPetani-API/apis/users/model"
@@ -17,7 +19,7 @@ type UserService struct {
 // AddUser implements UserServiceInterface
 func (service *UserService) AddUser(user *model.CreateUser) error {
 	if errValidate := service.validator.Struct(user); errValidate != nil {
-		return errValidate
+		return errors.New("error validator: " + errValidate.Error())
 	}
 
 	hashedPassword, errHash := service.hashing.HashPassword(user.Password)
@@ -55,9 +57,15 @@ func (*UserService) ShowUser(ID uint) (*users.User, error) {
 }
 
 func New(userRepo repository.UserRepoInterface) UserServiceInterface {
+	v := validator.New()
+	// Register the custom validation function
+	if err := v.RegisterValidation("validatePassword", model.ValidatePassword); err != nil {
+		panic("Failed to register validation function: " + err.Error())
+	}
+
 	return &UserService{
 		userRepo:  userRepo,
-		validator: validator.New(),
+		validator: v,
 		hashing:   *libs.NewBcrypt(),
 	}
 }

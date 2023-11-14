@@ -40,7 +40,7 @@ type UpdateUser struct {
 	AccountNumber string `json:"accountNumber"`
 }
 
-func validatePassword(fl validator.FieldLevel) bool {
+func ValidatePassword(fl validator.FieldLevel) bool {
 	password := fl.Field().String()
 
 	var lower, upper, number, special bool
