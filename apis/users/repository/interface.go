@@ -7,6 +7,5 @@ type UserRepoInterface interface {
 	GetAll(limit int, offset uint) ([]*model.User, error)
 	Get(ID uint) (*model.User, error)
 	Update(ID uint, core *model.User) error
-	Delete(ID uint)
+	Delete(ID uint) error
 }
-

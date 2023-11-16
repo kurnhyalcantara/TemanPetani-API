@@ -17,19 +17,27 @@ func (repo *userRepo) Create(core *model.CreateUser) error {
 	return nil
 }
 
-// Delete implements UserRepoInterface
-func (*userRepo) Delete(ID uint) {
-	panic("unimplemented")
-}
-
 // Get implements UserRepoInterface
-func (*userRepo) Get(ID uint) (*model.User, error) {
-	panic("unimplemented")
+func (repo *userRepo) Get(ID uint) (*model.User, error) {
+	var user model.User
+	if tx := repo.db.First(&user, ID); tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	return &user, nil
 }
 
 // GetAll implements UserRepoInterface
-func (*userRepo) GetAll(limit int, offset uint) ([]*model.User, error) {
+func (repo *userRepo) GetAll(limit int, offset uint) ([]*model.User, error) {
 	panic("unimplemented")
+}
+
+// Delete implements UserRepoInterface
+func (repo *userRepo) Delete(ID uint) error {
+	if tx := repo.db.Delete(&model.User{}, ID); tx.Error != nil {
+		return tx.Error
+	}
+	return nil
 }
 
 // Update implements UserRepoInterface
