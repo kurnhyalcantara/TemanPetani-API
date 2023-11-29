@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"errors"
+
+	"github.com/kurnhyalcantara/TemanPetani-API/apis/users"
 	"github.com/kurnhyalcantara/TemanPetani-API/apis/users/model"
 	"gorm.io/gorm"
 )
@@ -9,40 +12,64 @@ type userRepo struct {
 	db *gorm.DB
 }
 
-// Create implements UserRepoInterface
-func (repo *userRepo) Create(core *model.CreateUser) error {
-	if tx := repo.db.Create(&core); tx.Error != nil {
-		return tx.Error
+// Insert implements UserRepoInterface
+func (repo *userRepo) Insert(user *model.User) (ID uint, err error) {
+	if tx := repo.db.Create(&user); tx.Error != nil {
+		return 0, tx.Error
 	}
-	return nil
+	return user.ID, nil
 }
 
-// Get implements UserRepoInterface
-func (repo *userRepo) Get(ID uint) (*model.User, error) {
-	var user model.User
-	if tx := repo.db.First(&user, ID); tx.Error != nil {
+// Select implements UserRepoInterface
+func (repo *userRepo) Select(ID uint) (*users.User, error) {
+	var modelUser *model.User
+	if tx := repo.db.First(&modelUser, ID); tx.Error != nil {
 		return nil, tx.Error
 	}
-
-	return &user, nil
+	user := users.ToUser(modelUser)
+	return user, nil
 }
 
-// GetAll implements UserRepoInterface
-func (repo *userRepo) GetAll(limit int, offset uint) ([]*model.User, error) {
-	panic("unimplemented")
+// SelectAll implements UserRepoInterface
+func (repo *userRepo) SelectAll(limit int, offset uint) ([]*users.User, error) {
+	var modelUsers []*model.User
+	if limit > 0 || offset > 0 {
+		if tx := repo.db.Limit(limit).Offset(int(offset)).Find(&modelUsers); tx.Error != nil {
+			return nil, tx.Error
+		}
+	} else {
+		if tx := repo.db.Find(&modelUsers); tx.Error != nil {
+			return nil, tx.Error
+		}
+	}
+	users := users.ToUsers(modelUsers)
+	return users, nil
+}
+
+// Update implements UserRepoInterface
+func (repo *userRepo) Update(ID uint, user *model.User) (*users.User, error) {
+	var modelUser *model.User
+	if tx := repo.db.First(&modelUser, ID); tx.Error != nil {
+		return nil, tx.Error
+	}
+	if tx := repo.db.Model(&modelUser).Updates(&user); tx.Error != nil {
+		return nil, tx.Error
+	}
+	var modifiedUser *model.User
+	if tx := repo.db.First(&modifiedUser, ID); tx.Error != nil {
+		return nil, tx.Error
+	}
+	userData := users.ToUser(modifiedUser)
+	return userData, nil
 }
 
 // Delete implements UserRepoInterface
 func (repo *userRepo) Delete(ID uint) error {
-	if tx := repo.db.Delete(&model.User{}, ID); tx.Error != nil {
-		return tx.Error
+	tx := repo.db.Delete(&model.User{}, ID)
+	if tx.RowsAffected == 0 {
+		return errors.New("invalid id, no rows affected")
 	}
 	return nil
-}
-
-// Update implements UserRepoInterface
-func (*userRepo) Update(ID uint, core *model.User) error {
-	panic("unimplemented")
 }
 
 func New(db *gorm.DB) UserRepoInterface {

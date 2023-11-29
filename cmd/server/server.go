@@ -16,15 +16,16 @@ import (
 )
 
 func Serve() {
-	appConfig, dbConfig, err := config.LoadAllConfigs();
-	if err != nil {
-		log.Fatalf("error load configs: %v", err)
+	appConfig, dbConfig, errLoadConfig := config.LoadAllConfigs()
+	if errLoadConfig != nil {
+		log.Fatalf("error load configs: %v", errLoadConfig)
 	}
 	loggr := logger.SetUpLogger()
 
 	// Connect to database
-	if errDB := mysqldb.ConnectDB(dbConfig); errDB != nil {
-		log.Fatalf("error connect to db: %v", err)
+	errDB := mysqldb.ConnectDB(dbConfig)
+	if errDB != nil {
+		log.Fatalf("error connect to db: %v", errDB)
 	}
 
 	// Create http server
@@ -36,11 +37,11 @@ func Serve() {
 	go func() {
 		<-sigCh
 		loggr.Warnf("Shutting down server...")
-		ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 		_ = e.Shutdown(ctx)
 	}()
-	
+
 	// Start server
 	serverAddr := fmt.Sprintf("%s:%d", appConfig.HOST, appConfig.PORT)
 	e.Start(serverAddr)

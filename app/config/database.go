@@ -8,14 +8,14 @@ import (
 )
 
 type DBConfig struct {
-	DB_HOST string
-	DB_PORT	int
-	DB_USER	string
-	DB_PASS	string
-	DB_NAME string
-	DB_MAX_OPEN_CONNS int
-	DB_MAX_IDLE_CONNS int
-	DB_CONN_MAX_LIFETIME int 
+	DB_HOST              string
+	DB_PORT              int
+	DB_USER              string
+	DB_PASS              string
+	DB_NAME              string
+	DB_MAX_OPEN_CONNS    int
+	DB_MAX_IDLE_CONNS    int
+	DB_CONN_MAX_LIFETIME int
 }
 
 func LoadDBConfig() (*DBConfig, error) {
@@ -28,12 +28,14 @@ func LoadDBConfig() (*DBConfig, error) {
 	dbMaxIdleConns, foundDBMaxIdleConns := os.LookupEnv("DB_MAX_IDLE_CONNS")
 	dbConnMaxLifetime, foundDBConnMaxLifetime := os.LookupEnv("DB_CONN_MAX_LIFETIME")
 
-	viper.AddConfigPath(".")
-	viper.SetConfigName(".env.local")
-	viper.SetConfigType("env")
+	if !foundDBHost {
+		viper.AddConfigPath(".")
+		viper.SetConfigName(".env.local")
+		viper.SetConfigType("env")
 
-	if err := viper.ReadInConfig(); err != nil {
-		return nil, err
+		if err := viper.ReadInConfig(); err != nil {
+			return nil, err
+		}
 	}
 
 	if !foundDBHost {
@@ -74,13 +76,13 @@ func LoadDBConfig() (*DBConfig, error) {
 	dbConnMaxLifetimeInt, _ := strconv.Atoi(dbConnMaxLifetime)
 
 	return &DBConfig{
-		DB_HOST: dbHost,
-		DB_PORT: dbPortInt,
-		DB_USER: dbUser,
-		DB_PASS: dbPass,
-		DB_NAME: dbName,
-		DB_MAX_OPEN_CONNS: dbMaxOpenConnsInt,
-		DB_MAX_IDLE_CONNS: dbMaxIdleConnsInt,
+		DB_HOST:              dbHost,
+		DB_PORT:              dbPortInt,
+		DB_USER:              dbUser,
+		DB_PASS:              dbPass,
+		DB_NAME:              dbName,
+		DB_MAX_OPEN_CONNS:    dbMaxOpenConnsInt,
+		DB_MAX_IDLE_CONNS:    dbMaxIdleConnsInt,
 		DB_CONN_MAX_LIFETIME: dbConnMaxLifetimeInt,
 	}, nil
 }

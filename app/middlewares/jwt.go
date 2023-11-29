@@ -13,9 +13,9 @@ import (
 
 func JWTMiddleware() echo.MiddlewareFunc {
 	return echojwt.WithConfig(echojwt.Config{
-		SigningKey: []byte(config.GetAppConfig().JWT_SECRET_KEY),
-		ErrorHandler: jwtError,
-		SigningMethod: "HS256",	
+		SigningKey:    []byte(config.GetAppConfig().JWT_SECRET_KEY),
+		ErrorHandler:  jwtError,
+		SigningMethod: "HS256",
 	})
 }
 

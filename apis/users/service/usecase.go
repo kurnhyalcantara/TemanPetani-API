@@ -1,11 +1,8 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/kurnhyalcantara/TemanPetani-API/apis/users"
-	"github.com/kurnhyalcantara/TemanPetani-API/apis/users/model"
 	"github.com/kurnhyalcantara/TemanPetani-API/apis/users/repository"
 	"github.com/kurnhyalcantara/TemanPetani-API/app/libs"
 )
@@ -16,24 +13,9 @@ type UserService struct {
 	hashing   libs.Bcrypt
 }
 
-// AddUser implements UserServiceInterface
-func (service *UserService) AddUser(user *model.CreateUser) error {
-	if errValidate := service.validator.Struct(user); errValidate != nil {
-		return errors.New("error validator: " + errValidate.Error())
-	}
-
-	hashedPassword, errHash := service.hashing.HashPassword(user.Password)
-	if errHash != nil {
-		return errHash
-	}
-
-	user.Password = string(hashedPassword)
-
-	if errInsert := service.userRepo.Create(user); errInsert != nil {
-		return errInsert
-	}
-
-	return nil
+// RegisterUser implements UserServiceInterface
+func (*UserService) RegisterUser(user *users.CreateUser) error {
+	panic("unimplemented")
 }
 
 // DeleteUser implements UserServiceInterface
@@ -42,7 +24,7 @@ func (*UserService) DeleteUser(ID uint) {
 }
 
 // EditUser implements UserServiceInterface
-func (*UserService) EditUser(ID uint, user *model.UpdateUser) error {
+func (*UserService) EditUser(ID uint, user *users.UpdateUser) error {
 	panic("unimplemented")
 }
 
@@ -59,7 +41,7 @@ func (*UserService) ShowUser(ID uint) (*users.User, error) {
 func New(userRepo repository.UserRepoInterface) UserServiceInterface {
 	v := validator.New()
 	// Register the custom validation function
-	if err := v.RegisterValidation("validatePassword", model.ValidatePassword); err != nil {
+	if err := v.RegisterValidation("validatePassword", users.ValidatePassword); err != nil {
 		panic("Failed to register validation function: " + err.Error())
 	}
 

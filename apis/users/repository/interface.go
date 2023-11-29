@@ -1,11 +1,14 @@
 package repository
 
-import "github.com/kurnhyalcantara/TemanPetani-API/apis/users/model"
+import (
+	"github.com/kurnhyalcantara/TemanPetani-API/apis/users"
+	"github.com/kurnhyalcantara/TemanPetani-API/apis/users/model"
+)
 
 type UserRepoInterface interface {
-	Create(core *model.CreateUser) error
-	GetAll(limit int, offset uint) ([]*model.User, error)
-	Get(ID uint) (*model.User, error)
-	Update(ID uint, core *model.User) error
+	Insert(user *model.User) (ID uint, err error)
+	SelectAll(limit int, offset uint) ([]*users.User, error)
+	Select(ID uint) (*users.User, error)
+	Update(ID uint, core *model.User) (*users.User, error)
 	Delete(ID uint) error
 }

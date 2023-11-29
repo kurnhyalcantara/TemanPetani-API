@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 	"strconv"
 
@@ -14,8 +15,6 @@ type AppConfig struct {
 	JWT_SECRET_KEY  string
 	JWT_REFRESH_KEY string
 }
-
-var appConfig = &AppConfig{}
 
 func LoadAppConfig() (*AppConfig, error) {
 	host, foundAppHost := os.LookupEnv("APP_HOST")
@@ -67,5 +66,9 @@ func LoadAppConfig() (*AppConfig, error) {
 }
 
 func GetAppConfig() *AppConfig {
+	appConfig, err := LoadAppConfig()
+	if err != nil {
+		log.Fatalf("error get app config: %v", err)
+	}
 	return appConfig
 }
